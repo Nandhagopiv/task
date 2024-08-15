@@ -14,7 +14,7 @@ const EmailList = () => {
         const fetchEmails = async () => {
             setALoading(true);
             try {
-                const response = await axios.get('http://localhost:3001/emails');
+                const response = await axios.get('https://task-be-bb6x.onrender.com/emails');
                 console.log(response);
                 setEmails(response.data);
             } catch (error) {
@@ -31,7 +31,7 @@ const EmailList = () => {
         setLoading(true);
         const fetchAttachments = async () => {
             try {
-                const res = await axios.get('http://localhost:3001/attachments');
+                const res = await axios.get('https://task-be-bb6x.onrender.com/attachments');
                 const tempArr = res.data.flatMap((data) => data.attachments);
 
                 // Remove duplicates based on `filename` or any unique property
@@ -55,7 +55,7 @@ const EmailList = () => {
         setLoading(true);
         const fetchAttachments = async () => {
             try {
-                const res = await axios.get('http://localhost:3001/attachments');
+                const res = await axios.get('https://task-be-bb6x.onrender.com/attachments');
                 const tempArr = res.data.flatMap((data) => data.attachments);
 
                 // Remove duplicates based on `filename` or any unique property

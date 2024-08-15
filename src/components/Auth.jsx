@@ -2,7 +2,7 @@ import React from 'react';
 
 const Auth = () => {
     const handleAuth = () => {
-        window.location.href = 'http://localhost:3001/auth';
+        window.location.href = 'https://task-be-bb6x.onrender.com/auth';
     };
 
     return (

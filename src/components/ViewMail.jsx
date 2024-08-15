@@ -24,7 +24,7 @@ const ViewMail = () => {
         const fetchEmails = async () => {
             setLoading(true);
             try {
-                const response = await axios.get(`http://localhost:3001/getmail?id=${id}`);
+                const response = await axios.get(`https://task-be-bb6x.onrender.com/getmail?id=${id}`);
                 setContent(response.data.payload.headers);
             } catch (error) {
                 console.error('Error fetching email:', error);
