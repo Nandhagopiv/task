@@ -8,6 +8,7 @@ const EmailList = () => {
     const [Aloading, setALoading] = useState(false);
     const [loading, setLoading] = useState(false);
     const [attachments, setAttachments] = useState([]);
+    const [viewFiles, setViewFiles] = useState('-100%')
     const navigate = useNavigate(); // Lowercase `navigate` for convention
 
     useEffect(() => {
@@ -83,17 +84,27 @@ const EmailList = () => {
         })
     };
 
+    const handleSideNav = (val) => {
+        setViewFiles(val)
+    }
+
+    const handleAttachments = async (path) => {
+        console.log(path);
+        const res = await axios.get(`https://task-be-bb6x.onrender.com/viewattachments?path=${path}`)
+        navigate('/viewfile', {state:{path : res.data}})
+    }
+
     return (
         <Fragment>
             <main className='w-[100%] md:grid grid-cols-10'>
                 <section className='md:overflow-y-auto md:h-[730px] md:col-span-8'>
-                    <div className='border-b-2 sticky top-0 bg-white p-5 font-bold text-2xl'>
+                    <div className='border-b-2 flex justify-between items-center sticky top-0 bg-white p-5 font-bold text-2xl'>
                         <p>All Emails</p>
+                        <i onClick={() => handleSideNav('0')} className="fa-sharp md:hidden block fa-solid fa-less-than fa-2xs"> attachments</i>
                     </div>
                     <div>
-                        <p style={{ display: Aloading ? 'block' : 'none' }} className='text-center p-3'>Loading...</p>
                         {emails.map(email => (
-                            <div onClick={() => handleViewMail(email.id)} key={email.id} className='p-5 break-words hover:bg-zinc-200'>
+                            <div onClick={() => handleViewMail(email.id)} key={email.id} className='p-5 break-all hover:bg-zinc-200'>
                                 <p><strong>Date:</strong> {new Date(Number(email.internalDate)).toLocaleString()}</p>
                                 <div className='flex py-5 gap-5'>
                                     <div className='h-[100px] w-[100px]'>
@@ -106,13 +117,17 @@ const EmailList = () => {
                                 </div>
                             </div>
                         ))}
+                        <p style={{ display: Aloading ? 'block' : 'none' }} className='text-center p-3'>Loading...</p>
                     </div>
                 </section>
-                <section className='md:overflow-y-auto md:h-[730px] top-0 -right-[80%] bg-white fixed md:static shadow-xl flex flex-col gap-5 h-[100%] text-2xl col-span-2'>
-                    <h1 className='text-xl bg-white sticky top-0 font-semibold p-5'>Attachments</h1>
+                <section style={{ right: viewFiles }} className='md:overflow-y-auto w-[75%] md:w-[100%] md:h-[730px] top-0 bg-white fixed md:static shadow-xl flex flex-col gap-5 h-[100%] text-2xl col-span-2'>
+                    <div className='flex items-center justify-between pl-5'>
+                        <i onClick={() => handleSideNav('-100%')} className="fa-sharp md:hidden block fa-solid fa-less-than fa-2xs"></i>
+                        <h1 className='text-xl bg-white sticky top-0 font-semibold p-5'>Attachments</h1>
+                    </div>
                     <div className='flex flex-col gap-2'>
                         {attachments.map((doc) => (
-                            <p key={doc.filename} className='text-sm px-5 py-4 hover:bg-zinc-200 break-words'>
+                            <p onClick={() => handleAttachments(doc.filename)} key={doc.filename} className='text-sm px-5 py-4 hover:bg-zinc-200 break-words'>
                                 {doc.filename}
                             </p>
                         ))}

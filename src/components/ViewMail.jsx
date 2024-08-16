@@ -33,18 +33,15 @@ const ViewMail = () => {
             }
         };
 
-        fetchEmails();
-    }, [id]); // Depend on id to refetch if it changes
+        fetchEmails()
+    }, [id])
 
-    if (loading) return <p className="p-3 text-center">Loading...</p>;
-
-    // Check if content has been set and if it has enough items
-    const subject = content.length > 17 ? content[17]?.value : 'No Subject';
+    if (loading) return <p className="p-3 text-center">Loading...</p>
 
     return (
         <Fragment>
             <section>
-                <h1 className="p-5 text-xl font-bold border-b-2">{subject}</h1>
+                <h1 className="p-5 text-xl font-bold border-b-2">{content.find(item => item.name === 'Subject')?.value || 'Unknown'}</h1>
             </section>
             <section className="flex gap-4 border-b-2 py-5 flex-col">
                 <p className="px-5 text-xl">From: {content.find(item => item.name === 'From')?.value || 'Unknown'}</p>
