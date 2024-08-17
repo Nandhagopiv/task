@@ -1,9 +1,11 @@
 import { Fragment, useState, useEffect } from "react";
 import axios from "axios";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const ViewMail = () => {
     const [loading, setLoading] = useState(false);
+    const[attachment, setAttachment] = useState([])
+    const navigate = useNavigate()
     const [content, setContent] = useState([]);
     const location = useLocation();
     const id = location.state?.id;
@@ -25,7 +27,9 @@ const ViewMail = () => {
             setLoading(true);
             try {
                 const response = await axios.get(`https://task-be-bb6x.onrender.com/getmail?id=${id}`);
+                console.log(response.data);
                 setContent(response.data.payload.headers);
+                setAttachment(response.data.attachments)
             } catch (error) {
                 console.error('Error fetching email:', error);
             } finally {
@@ -35,6 +39,15 @@ const ViewMail = () => {
 
         fetchEmails()
     }, [id])
+
+    const handleAttachments = async (filename) => {
+        try {
+            const response = await axios.get(`https://task-be-bb6x.onrender.com/viewattachments?filename=${filename}`);
+            navigate('/viewfile', { state: { path: response.data.path, type: response.data.type } });
+        } catch (error) {
+            console.error('Error fetching attachment file:', error);
+        }
+    };
 
     if (loading) return <p className="p-3 text-center">Loading...</p>
 
@@ -50,6 +63,20 @@ const ViewMail = () => {
             </section>
             <section className="flex gap-4 py-5 flex-col">
                 <p className="px-5 text-xl">{location.state.msg}</p>
+            </section>
+            <section className="my-10">
+                <div className='flex gap-2 justify-center items-center'>
+                    {
+                        attachment.map((data) => {
+                            return <div onClick={() => handleAttachments(data.filename)} className='flex cursor-pointer bg-white rounded-3xl flex-wrap gap-2 items-center px-5 py-2'>
+                                <i className="fa-solid fa-file text-[#E33851]"></i>
+                                <p className='text-sm'>
+                                    {data.filename}
+                                </p>
+                            </div>
+                        })
+                    }
+                </div>
             </section>
         </Fragment>
     );
